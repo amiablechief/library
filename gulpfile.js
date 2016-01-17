@@ -5,6 +5,7 @@ var nodemon = require('gulp-nodemon');
 
 var jsFiles = ['*.js', 'src/**/*.js'];
 
+/* $ gulp style */
 gulp.task('style', function() {
     return gulp.src(jsFiles)
         .pipe(jshint())
@@ -14,6 +15,7 @@ gulp.task('style', function() {
         .pipe(jscs());
 });
 
+/* $ gulp task */
 gulp.task('inject', function() {
     var wiredep = require('wiredep').stream;
     var inject = require('gulp-inject');
@@ -28,12 +30,13 @@ gulp.task('inject', function() {
         ignorePath: '../../public'
     };
 
-    return gulp.src('./src/views/*.html')
+    return gulp.src('./src/views/*.jade')
     .pipe(wiredep(options))
     .pipe(inject(injectSrc, injectOptions))
     .pipe(gulp.dest('./src/views'));
 });
 
+/* $ gulp serve */
 gulp.task('serve', ['style', 'inject'], function() {
     var options = {
         script: 'app.js',
