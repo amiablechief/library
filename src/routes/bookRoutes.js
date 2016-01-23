@@ -1,53 +1,20 @@
 var express = require('express');
 var bookRouter = express.Router();
 
+var mongodb = require('mongodb').MongoClient;
+var objectId = require('mongodb').ObjectID;
+
 var router = function(nav) {
-    var books = [
-            {
-                title: 'War and Peace',
-                genre: 'Historical Fiction',
-                author: 'Lev Nikolayevich Tolstoy',
-                read: false
-            },
-            {
-                title: 'Programming C#',
-                genre: 'Computer Languages',
-                author: 'Kulin Parikh',
-                read: false
-            },
-            {
-                title: 'Les Miserables',
-                genre: 'Historical Fiction',
-                author: 'Victor Hugo',
-                read: false
-            },
-            {
-                title: 'The Hard Thing about Hard Things',
-                genre: 'Self Development',
-                author: 'John Smith',
-                read: false
-            }
-    ];
+    var bookService = require('../services/goodreadsService')();
+    var bookController = require('../controllers/bookController')(bookService, nav);
+
+    bookRouter.use(bookController.middleware);
 
     bookRouter.route('/')
-        .get(function(req, res) {
-            res.render('bookListView', {
-                title: 'Books',
-                nav: nav,
-                books: books
-            });
-        });
+    .get(bookController.getIndex);
 
     bookRouter.route('/:id')
-        .get(function(req, res) {
-            var id = req.params.id;
-            res.render('bookView', {
-                title: 'Book',
-                nav: nav,
-                book: books[id]
-            });
-        });
-
+        .get(bookController.getById);
     return bookRouter;
 };
 
